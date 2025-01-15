@@ -18,8 +18,19 @@ public:
     void withdraw(double amount) {
         balance -= amount;
     }
+
+    void validateWithdraw(double t_amount)
+    {
+        if (getBalance() > t_amount) {
+            withdraw(t_amount);
+            std::cout << "Withdrawal successful. New balance: $" << getBalance() << std::endl;
+        }
+        else {
+            std::cout << "Insufficient funds for withdrawal." << std::endl;
+        }
+    }
 };
-class HeatingSystem {
+class Boiler {
 public:
     void turnOn() {
         std::cout << "Heating system turned on." << std::endl;
@@ -33,12 +44,25 @@ public:
 class Thermostat {
 private:
     double currentTemperature;
+    const double CURRENT_TEMPERATURE = 20.0f;
 
 public:
     Thermostat(double temperature) : currentTemperature(temperature) {}
 
     double getCurrentTemperature() const {
         return currentTemperature;
+    }
+
+    bool canIncrease()
+    {
+        if (currentTemperature < CURRENT_TEMPERATURE)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 };
 #include <iostream>
@@ -57,7 +81,13 @@ public:
     }
 
     void borrowBook() {
-        isAvailable = false;
+        if (checkAvailability()) {
+            std::cout << "Book borrowed successfully." << std::endl;
+            isAvailable = false;
+        }
+        else {
+            std::cout << "Book is not available for borrowing." << std::endl;
+        }
     }
 
     void returnBook() {
@@ -69,13 +99,7 @@ class Library {
 public:
     void processBookBorrowing(Book& book) {
         // Violates Tell, Don't Ask
-        if (book.checkAvailability()) {
-            book.borrowBook();
-            std::cout << "Book borrowed successfully." << std::endl;
-        }
-        else {
-            std::cout << "Book is not available for borrowing." << std::endl;
-        }
+        book.borrowBook();
     }
 };
 
@@ -102,12 +126,24 @@ public:
     void useAmmo() {
         ammo--;
     }
+
+    bool canRespond()
+    {
+        if (health > 0 && ammo > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 };
 
 class Game {
 public:
     void enemyAttack(Player& player) {
-        if (player.getHealth() > 0 && player.getAmmo() > 0) {
+        if (player.canRespond()) {
             player.takeDamage(10);
             player.useAmmo();
             std::cout << "Player attacked and used ammo." << std::endl;
@@ -126,22 +162,16 @@ int main() {
  
     BankAccount account(1000.0);
 
-    // Violation of Tell, Don't Ask
-    if (account.getBalance() > 500) {
-        account.withdraw(500);
-        std::cout << "Withdrawal successful. New balance: $" << account.getBalance() << std::endl;
-    }
-    else {
-        std::cout << "Insufficient funds for withdrawal." << std::endl;
-    }
+    account.validateWithdraw(500.0);
+    
     //////////////////////////////////////////////////////////////////
     // Exercise 2
     //////////////////////////////////////////////////////////////////
 
     Thermostat thermostat(18.5);
-    HeatingSystem heating;
+    Boiler heating;
 
-    if (thermostat.getCurrentTemperature() < 20.0) {
+    if (thermostat.canIncrease()) {
         heating.turnOn();
     }
     else {
