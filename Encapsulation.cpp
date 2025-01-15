@@ -30,7 +30,7 @@ public:
         }
     }
 };
-class HeatingSystem {
+class Boiler {
 public:
     void turnOn() {
         std::cout << "Heating system turned on." << std::endl;
@@ -103,7 +103,6 @@ public:
     }
 };
 
-
 class Player {
 private:
     int health;
@@ -127,12 +126,24 @@ public:
     void useAmmo() {
         ammo--;
     }
+
+    bool canRespond()
+    {
+        if (health > 0 && ammo > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 };
 
 class Game {
 public:
     void enemyAttack(Player& player) {
-        if (player.getHealth() > 0 && player.getAmmo() > 0) {
+        if (player.canRespond()) {
             player.takeDamage(10);
             player.useAmmo();
             std::cout << "Player attacked and used ammo." << std::endl;
@@ -158,7 +169,7 @@ int main() {
     //////////////////////////////////////////////////////////////////
 
     Thermostat thermostat(18.5);
-    HeatingSystem heating;
+    Boiler heating;
 
     if (thermostat.canIncrease()) {
         heating.turnOn();
