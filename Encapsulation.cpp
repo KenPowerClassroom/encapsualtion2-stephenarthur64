@@ -30,7 +30,7 @@ public:
         }
     }
 };
-class Boiler {
+class HeatingSystem {
 public:
     void turnOn() {
         std::cout << "Heating system turned on." << std::endl;
@@ -81,13 +81,7 @@ public:
     }
 
     void borrowBook() {
-        if (checkAvailability()) {
-            std::cout << "Book borrowed successfully." << std::endl;
-            isAvailable = false;
-        }
-        else {
-            std::cout << "Book is not available for borrowing." << std::endl;
-        }
+        isAvailable = false;
     }
 
     void returnBook() {
@@ -99,7 +93,13 @@ class Library {
 public:
     void processBookBorrowing(Book& book) {
         // Violates Tell, Don't Ask
-        book.borrowBook();
+        if (book.checkAvailability()) {
+            book.borrowBook();
+            std::cout << "Book borrowed successfully." << std::endl;
+        }
+        else {
+            std::cout << "Book is not available for borrowing." << std::endl;
+        }
     }
 };
 
@@ -126,24 +126,12 @@ public:
     void useAmmo() {
         ammo--;
     }
-
-    bool canRespond()
-    {
-        if (health > 0 && ammo > 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
 };
 
 class Game {
 public:
     void enemyAttack(Player& player) {
-        if (player.canRespond()) {
+        if (player.getHealth() > 0 && player.getAmmo() > 0) {
             player.takeDamage(10);
             player.useAmmo();
             std::cout << "Player attacked and used ammo." << std::endl;
@@ -159,17 +147,17 @@ int main() {
     //////////////////////////////////////////////////////////////////
     // Exercise 1
     //////////////////////////////////////////////////////////////////
- 
+
     BankAccount account(1000.0);
 
     account.validateWithdraw(500.0);
-    
+
     //////////////////////////////////////////////////////////////////
     // Exercise 2
     //////////////////////////////////////////////////////////////////
 
     Thermostat thermostat(18.5);
-    Boiler heating;
+    HeatingSystem heating;
 
     if (thermostat.canIncrease()) {
         heating.turnOn();
@@ -177,7 +165,7 @@ int main() {
     else {
         heating.turnOff();
     }
-    
+
     //////////////////////////////////////////////////////////////////
     // Exercise 3
     //////////////////////////////////////////////////////////////////
